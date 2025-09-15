@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect QuickBooks Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card hero" aria-label="Connect to QuickBooks">
+      <div class="hero-content">
+        <h1 class="title">Connect to QuickBooks</h1>
+        <p class="subtitle">Seamlessly manage your custom field definitions once connected.</p>
+        <button id="connectBtn" class="btn btn-primary" type="button" aria-controls="tabs">
+          Connect to Quickbooks
+        </button>
+      </div>
+    </section>
+
+    <section id="tabs" class="card tabs is-hidden" aria-label="Custom Field Actions">
+      <div role="tablist" aria-label="Custom Field tabs" class="tablist">
+        <button role="tab" aria-selected="false" aria-controls="panel-create" id="tab-create" class="tab-btn" tabindex="-1">Create Custom Field</button>
+        <button role="tab" aria-selected="false" aria-controls="panel-update" id="tab-update" class="tab-btn" tabindex="-1">Update Custom Field</button>
+        <button role="tab" aria-selected="false" aria-controls="panel-get-filter" id="tab-get-filter" class="tab-btn" tabindex="-1">Get Custom Fields </button>
+      </div>
+
+      <div id="panel-create" role="tabpanel" aria-labelledby="tab-create" class="tab-panel" hidden>
+        <form id="form-create" class="form" novalidate>
+          <div class="form-row">
+            <label for="create-name">Name</label>
+            <input id="create-name" name="name" type="text" placeholder="Enter label name" />
+          </div>
+          <div class="form-row">
+            <label for="create-type">Data Type</label>
+            <select id="create-type" name="create-type">
+              <option value="">SELECT DATA TYPE</option>
+              <option value="DATE">DATE</option>
+              <option value="NUMBER">NUMBER</option>
+              <option value="OBJECT_LIST">OBJECT_LIST</option>
+              <option value="STRING">STRING</option>
+              <option value="STRING_LIST">STRING_LIST</option>
+              <option value="UNKNOWN">UNKNOWN</option>
+            </select>
+          </div>
+          <hr style="border: 2px solid #333; margin: 2px 0;">
+          <div class="form-row">
+            <label for="create-dropDownOption">Drop Down Option</label>
+          </div>
+          <div id="create-dropDownOption-empty"></div>
+          <div class="form-row">
+            <input type="button" id="create-add-dropdownoption" value="Add New DropDown Option" />
+            <input type="button" id="create-remove-dropdownoption" value="Remove Last DropDown Option" disabled/>
+          </div>
+          <hr style="border: 2px solid #333; margin: 2px 0;">
+          <div class="form-row">
+            <label>Associations</label>
+          </div>
+          
+          <hr style="border: 0.5px solid #333; margin: 2px 0;">
+          <div id="create-associations-empty"></div>
+          <div class="form-row">
+            <input type="button" id="create-add-associations" value="Add New Association"/>
+            <input type="button" id="create-remove-associations" value="Remove Last ASsociation" disabled/>
+          </div>
+          <div class="form-actions">
+            <button id="createCustomFieldBtn" class="btn btn-primary" type="button">Create</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="panel-update" role="tabpanel" aria-labelledby="tab-update" class="tab-panel" hidden>
+        <form id="form-update" class="form" novalidate>
+          <div class="form-row">
+            <label for="update-id">ID</label>
+            <input id="update-id" name="id" type="text" inputmode="numeric" placeholder="Enter project ID" />
+          </div>
+          <div class="form-row">
+            <label for="update-legacyid">Legacy ID</label>
+            <input id="update-legacyid" name="legacyid" type="text" inputmode="text" placeholder="Enter new Legacy ID" />
+          </div>
+          <div class="form-row">
+            <label for="update-name">Label</label>
+            <input id="update-name" name="name" type="text" placeholder="Enter new label name" />
+          </div>
+          <div class="form-row">
+            <label for="update-type">Data Type</label>
+            <select id="update-type" name="update-type">
+              <option value="">SELECT DATA TYPE</option>
+              <option value="DATE">DATE</option>
+              <option value="NUMBER">NUMBER</option>
+              <option value="OBJECT_LIST">OBJECT_LIST</option>
+              <option value="STRING">STRING</option>
+              <option value="STRING_LIST">STRING_LIST</option>
+              <option value="UNKNOWN">UNKNOWN</option>
+            </select>
+          </div>
+          <hr style="border: 2px solid #333; margin: 2px 0;">
+          <div class="form-row">
+            <label for="update-dropDownOption">Drop Down Option</label>
+          </div>
+          <div id="update-dropDownOption-empty"></div>
+          <div class="form-row">
+            <input type="button" id="update-add-dropdownoption" value="Add New DropDown Option" />
+            <input type="button" id="update-remove-dropdownoption" value="Remove Last DropDown Option" disabled/>
+          </div>
+          <hr style="border: 2px solid #333; margin: 2px 0;">
+          <div class="form-row">
+            <label>Associations</label>
+          </div>
+          
+          <hr style="border: 0.5px solid #333; margin: 2px 0;">
+          <div id="update-associations-empty"></div>
+          <div class="form-row">
+            <input type="button" id="update-add-associations" value="Add New Association"/>
+            <input type="button" id="update-remove-associations" value="Remove Last ASsociation" disabled/>
+          </div>
+        <div class="form-actions">
+            <button id="updateCustomFieldBtn"  class= "btn btn-primary" type="button">Update</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="panel-get-filter" role="tabpanel" aria-labelledby="tab-get-filter" class="tab-panel" hidden>
+        <!-- <form id="form-get-filter" class="form" novalidate>
+          <div class="form-row">
+            <label for="get-filter-id">Custom Field IDs</label>
+            <input id="get-filter-id" name="id" type="text" placeholder="Enter IDs" />
+          </div>
+          <div class="form-row">
+            <label for="get-filter-type">Type</label>
+            <input id="get-filter-type" name="type" type="text" placeholder="Enter type" />
+          </div>
+          <div class="form-row">
+            <label for="get-filter-customer">Customer IDs</label>
+            <input id="get-filter-customer" name="customer" type="text" placeholder="Enter customer IDs" />
+          </div>
+          <div class="form-row">
+            <label for="get-filter-priority">Priority</label>
+            <input id="get-filter-priority" name="priority" type="text" placeholder="Enter Priority" />
+          </div>
+          <div class="form-row">
+            <label for="get-filter-status">Status</label>
+            <input id="get-filter-status" name="priority-status" type="text" placeholder="Enter Statuses" />
+          </div>
+          <div class="form-row">
+            <label for="get-filter-startDateFrom">Start Date From</label>
+            <input id="get-filter-startDateFrom" name="start-date-from" type="date"/>
+          </div>
+          <div class="form-row">
+            <label for="get-filter-startDateTo">Start Date To</label>
+            <input id="get-filter-startDateTo" name="start-date-to" type="date"/>
+          </div>
+          <div class="form-row">
+            <label for="get-filter-dueDateFrom">Due Date From</label>
+            <input id="get-filter-dueDateFrom" name="due-date-from" type="date"/>
+          </div>
+          <div class="form-row">
+            <label for="get-filter-dueDateTo">Due Date To</label>
+            <input id="get-filter-dueDateTo" name="due-date-to" type="date"/>
+          </div>
+          <div class="form-row">
+            <label for="get-filter-active">Active</label>
+            <label> <input type="radio" name="get-filter-active" value="true"> True</label>
+            <label> <input type="radio" name="get-filter-active" value="false"> False</label>
+            <label> <input type="radio" name="get-filter-active" value="" checked> None</label>
+          </div>
+          <div class="form-row">
+            <label for="get-filter-sort">Sort By</label>
+            <label> <input type="radio" name="get-filter-sort" value="COMPLETED_DATE"> COMPLETED DATE</label>
+            <label> <input type="radio" name="get-filter-sort" value="DUE_DATE" checked> DUE DATE</label>
+            <label> <input type="radio" name="get-filter-sort" value="NAME"> NAME</label>
+            <label> <input type="radio" name="get-filter-sort" value="STATUS"> STATUS</label>
+            <label> <input type="radio" name="get-filter-sort" value="TYPE"> TYPE</label>
+          </div>
+          <div class="form-row">
+            <label for="get-filter-order">Sort Order</label>
+            <label> <input type="radio" name="get-filter-order" value="ASC"> Ascending</label>
+            <label> <input type="radio" name="get-filter-order" value="DESC" checked> Descending</label>
+          </div> -->
+          <div class="form-actions">
+            <button id="getCustomFieldsBtn" class="btn btn-primary" type="button">Get Custom Fields</button>
+          </div>
+        </form>
+      </div>
+    </section>
+    <div>
+        <label id="display"></label>
+        <div id="table"></div>
+    </div>
+  </main>
+
+  <script>
+    (async function () {
+      const connectButton = document.getElementById('connectBtn');
+      const tabsSection = document.getElementById('tabs');
+      const heroSection = document.querySelector('.hero');
+      const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
+      const tabPanels = Array.from(document.querySelectorAll('.tab-panel'));
+      const createButton = document.getElementById('createCustomFieldBtn');
+      const updateButton = document.getElementById('updateCustomFieldBtn');
+      const getButton = document.getElementById('getByIdBtn');
+      const getCustomFieldsButton = document.getElementById('getCustomFieldsBtn');
+      const deleteButton = document.getElementById('deleteBtn');
+      // const unDeleteButton = document.getElementById('unDeleteBtn');
+
+      let allCustomFields = [];
+
+      let ddoIndex = -1;
+      let subAssIndexes = [];
+      let assIndex = -1;
+      let ddoIndexUpdate = -1;
+      let subAssIndexesUpdate = [];
+      let assIndexUpdate = -1;
+      const associationHtml = (operation, index) => 
+      `
+        <hr style="border: 0.8px solid #333; margin:5px 0px;" >
+        <div class="form-row">
+          <label for="${operation}-associations-${index}-entity">Associated Entity</label>
+          <input id="${operation}-associations-${index}-entity" name="${operation}-associations-${index}-entity" type="text" placeholder="Enter Associated Entity" />
+        </div>
+        <div class="form-row">
+            <div class="form-actions">
+              <label for="${operation}-associations-${index}-validation">Validation Options</label>
+              <input id="${operation}-associations-${index}-validation" name="${operation}-associations-${index}-validation" type="checkbox" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-actions">
+              <label>Allowed Options:</label>
+              <input id="${operation}-associations-${index}-allowed-print" name="${operation}-associations-${index}-allowed" type="checkbox" value="PRINT" />
+              <label for="${operation}-print">PRINT</label>
+              <input id="${operation}-associations-${index}-allowed-unknown" name="${operation}-associations-${index}-allowed" type="checkbox" value="UNKNOWN" />
+              <label for="${operation}-print">UNKNOWN</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="${operation}-associations-${index}-conditions">Associated Conditions</label>
+            <select id="${operation}-associations-${index}-conditions" name="${operation}-associations-${index}-conditions">
+              <option value="">SELECT ASSOCIATED CONDITIONS</option>
+              <option value="EXCLUDED">EXCLUDED</option>
+              <option value="INCLUDED">INCLUDED</option>
+              <option value="UNKNOWN">UNKNOWN</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Sub-Associations</label>
+          </div>
+          <hr style="border: 0.5px solid #333; margin: 2px 0;">
+          <div id="${operation}-sub-associations-${index}-empty"></div>
+          <div class="form-row">
+            <input type="button" id="${operation}-add-${index}-sub-associations" value="Add New Sub Association"/>
+            <input type="button" id="${operation}-remove-${index}-sub-associations" value="Remove Last Sub Association" disabled/>
+          </div>
+      `;
+      const subAssociationHtml = (operation, subIndex, index) => 
+      `
+        <hr style="border: 0.8px solid #333; margin:5px 0px;" >
+        <div class="form-row">
+          <label for="${operation}-sub-associations-${index}-${subIndex}-entity">Associated Entity</label>
+          <input id="${operation}-sub-associations-${index}-${subIndex}-entity" name="${operation}-sub-associations-${index}-${subIndex}-entity" type="text" placeholder="Enter Associated Entity" />
+        </div>
+        <div class="form-row">
+          <div class="form-actions">
+            <label for="${operation}-sub-associations-${index}-${subIndex}-validation">Validation Options</label>
+            <input id="${operation}-sub-associations-${index}-${subIndex}-validation" name="${operation}-sub-associations-${index}-${subIndex}-validation" type="checkbox" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-actions">
+            <label>Allowed Options:</label>
+            <input id="${operation}-sub-associations-${index}-${subIndex}-allowed-print" name="${operation}-sub-associations-${index}-${subIndex}-allowed" type="checkbox" value="PRINT" />
+            <label for="${operation}-sub-print">PRINT</label>
+            <input id="${operation}-sub-associations-${index}-${subIndex}-allowed-unknown" name="${operation}-sub-associations-${index}-${subIndex}-allowed" type="checkbox" value="UNKNOWN" />
+            <label for="${operation}-sub-unknown">UNKNOWN</label>
+          </div>
+        </div>
+      `;
+      const dropDownHtml = (operation, index) =>
+        `
+        <hr style="border: 0.8px solid #333; margin:5px 0px;" >
+        <div class="form-row">
+            <label for="${operation}-dropDownOption-${index}-value">Value</label>
+            <input id="${operation}-dropDownOption-${index}-value" name="${operation}-dropDownOption-${index}-value" type="text" placeholder="Enter Value" />
+          </div>
+          <div class="form-row">
+            <label for="${operation}-dropDownOption-${index}-id">ID</label>
+            <input id="${operation}-dropDownOption-${index}-id" name="${operation}-dropDownOption-${index}-id" type="text" placeholder="Enter ID" />
+          </div>
+          <div class="form-row">
+            <label for="${operation}-dropDownOption-${index}-order">Order</label>
+            <input id="${operation}-dropDownOption-${index}-order" name="${operation}-dropDownOption-${index}-order" type="number" placeholder="Enter Order" />
+          </div>
+          <div class="form-row">
+            <div class="form-actions">
+              <label for="${operation}-dropDownOption-${index}-active">Active</label>
+              <input checked id="${operation}-dropDownOption-${index}-active" name="${operation}-dropDownOption-${index}-active" type="checkbox"  />
+            </div>
+          </div>
+        `;
+      const populate = (html, element, id) => {
+        const div = document.createElement('div');
+        div.id = id;
+        div.innerHTML = html;
+        element.appendChild(div);
+        // element.innerHTML = `${element.innerHTML}
+        // ${html}
+        // `;
+      };
+      const addDropOption = document.getElementById('create-add-dropdownoption');
+      const removeDropOption = document.getElementById('create-remove-dropdownoption');
+      const dropDopwnOptionEmpty = document.getElementById('create-dropDownOption-empty');
+      addDropOption.addEventListener('click', function() {
+        ddoIndex++;
+        if(ddoIndex > -1) {
+          removeDropOption.removeAttribute('disabled');
+        }
+        populate(dropDownHtml('create', ddoIndex), dropDopwnOptionEmpty, `ddo-create-${ddoIndex}`);
+      });
+      removeDropOption.addEventListener('click', function() {
+        if(ddoIndex < 0) return;
+        console.log('ddo-indexing', ddoIndex)
+        const element = document.getElementById(`ddo-create-${ddoIndex}`);
+        element.remove();
+        ddoIndex--;
+        if(ddoIndex === -1) removeDropOption.setAttribute('disabled', 'disabled');
+      });
+      const addAss = document.getElementById('create-add-associations');
+      const removeAss = document.getElementById('create-remove-associations');
+      const assEmpty = document.getElementById('create-associations-empty');
+      addAss.addEventListener('click', function() {
+        assIndex++;
+        if(assIndex > -1) {
+          removeAss.removeAttribute('disabled');
+        }
+        populate(associationHtml('create', assIndex), assEmpty, `ass-create-${assIndex}`);
+        subAssIndexes.push(-1);
+
+        const addSubAss = document.getElementById(`create-add-${assIndex}-sub-associations`);
+        const removeSubAss = document.getElementById(`create-remove-${assIndex}-sub-associations`);
+        const subAssEmpty = document.getElementById(`create-sub-associations-${assIndex}-empty`);
+        addSubAss.addEventListener('click', function() {
+          let subAssIndex = subAssIndexes[assIndex];
+          subAssIndex++;
+          subAssIndexes[assIndex] = subAssIndex;
+          if(subAssIndex > -1) {
+            removeSubAss.removeAttribute('disabled');
+          }
+          populate(subAssociationHtml('create', subAssIndex, assIndex), subAssEmpty, `subAss-create-${assIndex}-${subAssIndex}`);
+        });
+        removeSubAss.addEventListener('click', function(e) {
+          const index = +e.target.id.split('-')[2];
+          let subAssIndex = subAssIndexes[index];
+          if(subAssIndex < 0) return;
+          const element = document.getElementById(`subAss-create-${index}-${subAssIndex}`);
+          element.remove();
+          subAssIndex--;
+          subAssIndexes[index] = subAssIndex;
+          if(subAssIndex === -1) removeSubAss.setAttribute('disabled', 'disabled');
+        });
+      });
+      removeAss.addEventListener('click', function() {
+        if(assIndex < 0) return;
+        const element = document.getElementById(`ass-create-${assIndex}`);
+        element.remove();
+        assIndex--;
+        subAssIndexes.pop();
+        if(assIndex === -1) removeAss.setAttribute('disabled', 'disabled');
+      })
+      let isAuth = false;
+
+        await checkToken();
+        if(isAuth) {
+            showTabs();
+        }
+
+      function activateTab(index) {
+        tabButtons.forEach((btn, i) => {
+          const isActive = i === index;
+          btn.setAttribute('aria-selected', String(isActive));
+          btn.tabIndex = isActive ? 0 : -1;
+          btn.classList.toggle('is-active', isActive);
+          const panel = tabPanels[i];
+          if (panel) {
+            if (isActive) {
+              panel.removeAttribute('hidden');
+            } else {
+              panel.setAttribute('hidden', '');
+            }
+          }
+        });
+      }
+
+      async function checkToken() {
+        const response = await fetch('/api/auth/retrieveToken', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if(response.ok) {
+            const data = await response.json();
+            if(data.token) {
+                isAuth = true;
+            }
+        }
+      }
+
+    async function login() {
+        const response = await fetch('/api/auth/login', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if(response.ok) {
+            const data = await response.json();
+            if(data.redirectUrl) window.location.href = data.redirectUrl;
+        }
+    }
+
+      getCustomFieldsButton.addEventListener('click', function() {
+        fetch('/api/quickbook/custom-fields', {
+            headers: {'Content-Type': 'application/json' },
+        })
+        .then(response => response.json())
+        .then(data => {
+            const customFields = data.appFoundationsCustomFieldDefinitions.edges;
+            const label = document.getElementById('display');
+            display.innerText = '';
+            let tableHtml = `
+                <table>
+                    `;
+                
+            if(customFields && customFields.length > 0) {
+                tableHtml = `${tableHtml}
+                    <thead>
+                        <tr>
+                            <th> ID </th>
+                            <th> LEGACY ID </th>
+                            <th> LABEL </th>
+                            <th> DATATYPE </th>
+                            <th> STATUS </th>
+                            <th> TOTAL ASSOCIATIONS </th>
+                            <th> TOTAL SUB ASSOCIATIONS </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    `;
+            }
+            allCustomFields = customFields;
+            for(const node of customFields) {
+                const customField = node?.node;
+                if(!customField) {
+                    continue;
+                }
+                tableHtml = `${tableHtml}
+                    <tr> 
+                        <td> ${customField.id} </td>
+                        <td> ${customField.legacyIDV2} </td>
+                        <td> ${customField.label} </td>
+                        <td> ${customField.dataType} </td>
+                        <td> ${customField.active} </td>
+                        <td> ${customField.associations?.length} </td>
+                        <td> ${customField.associations?.reduce((prev, curr, index) => {
+                          return prev + curr.subAssociations.length;
+                        }, 0)} </td>
+                    </tr>
+                `;
+            }
+            tableHtml = `${tableHtml}
+                </tbody>
+            </table>
+            `;
+            const table = document.getElementById('table');
+            table.innerHTML = tableHtml;
+            document.getElementById('table').addEventListener('click', function(e) {
+            const row = e.target.closest('tr');
+            if(row) {
+              const innerText = row.innerText.split('\t')[0]?.trim();
+              console.log('selected ', innerText, 'all cust fields ', allCustomFields);
+              let custField;
+              for(const cust of allCustomFields) {
+                if(cust.node?.id === innerText) {
+                  custField = cust.node;
+                  break;
+                }
+              }
+              fillCustomField(custField);
+            }
+          })
+        })
+      });     
+      const addDropOptionUpdate = document.getElementById('update-add-dropdownoption');
+      const removeDropOptionUpdate = document.getElementById('update-remove-dropdownoption');
+      const dropDopwnOptionEmptyUpdate = document.getElementById('update-dropDownOption-empty');
+       const addAssUpdate = document.getElementById('update-add-associations');
+      const removeAssUpdate = document.getElementById('update-remove-associations');
+      const assEmptyUpdate = document.getElementById('update-associations-empty');
+      addDropOptionUpdate.addEventListener('click', function() {
+        ddoIndexUpdate++;
+        if(ddoIndexUpdate > -1) {
+          removeDropOptionUpdate.removeAttribute('disabled');
+        }
+        populate(dropDownHtml('update', ddoIndexUpdate), dropDopwnOptionEmpty, `ddo-update-${ddoIndexUpdate}`);
+      });
+      removeDropOptionUpdate.addEventListener('click', function() {
+        if(ddoIndexUpdate < 0) return;
+        const element = document.getElementById(`ddo-update-${ddoIndexUpdate}`);
+        element.remove();
+        ddoIndexUpdate--;
+        if(ddoIndexUpdate === -1) removeDropOptionUpdate.setAttribute('disabled', 'disabled');
+      });
+      
+      addAssUpdate.addEventListener('click', function() {
+        assIndexUpdate++;
+        if(assIndexUpdate > -1) {
+          removeAss.removeAttribute('disabled');
+        }
+        populate(associationHtml('update', assIndexUpdate), assEmptyUpdate, `ass-update-${assIndexUpdate}`);
+        subAssIndexesUpdate.push(-1);
+
+        const addSubAssUpdate = document.getElementById(`update-add-${assIndexUpdate}-sub-associations`);
+        const removeSubAssUpdate = document.getElementById(`update-remove-${assIndexUpdate}-sub-associations`);
+        const subAssEmptyUpdate = document.getElementById(`update-sub-associations-${assIndexUpdate}-empty`);
+        addSubAssUpdate.addEventListener('click', function() {
+          let subAssIndexUpdate = subAssIndexes[assIndexUpdate];
+          subAssIndexUpdate++;
+          subAssIndexesUpdate[assIndexUpdate] = subAssIndexUpdate;
+          if(subAssIndexUpdate > -1) {
+            removeSubAssUpdate.removeAttribute('disabled');
+          }
+          populate(subAssociationHtml('update', subAssIndexUpdate, assIndexUpdate), subAssEmptyUpdate, `subAss-update-${assIndexUpdate}-${subAssIndexUpdate}`);
+        });
+        removeSubAssUpdate.addEventListener('click', function(e) {
+          const index = +e.target.id.split('-')[2];
+          let subAssIndex = subAssIndexesUpdate[index];
+          if(subAssIndex < 0) return;
+          const element = document.getElementById(`subAss-update-${index}-${subAssIndex}`);
+          element.remove();
+          subAssIndex--;
+          subAssIndexesUpdate[index] = subAssIndex;
+          if(subAssIndex === -1) removeSubAssUpdate.setAttribute('disabled', 'disabled');
+        });
+      });
+      removeAssUpdate.addEventListener('click', function() {
+        if(assIndexUpdate < 0) return;
+        const element = document.getElementById(`ass-update-${assIndexUpdate}`);
+        element.remove();
+        assIndexUpdate--;
+        subAssIndexesUpdate.pop();
+        if(assIndexUpdate === -1) removeAssUpdate.setAttribute('disabled', 'disabled');
+      })
+      
+    function fillCustomField(custField) {
+      dropDopwnOptionEmptyUpdate.innerHTML = '';
+      assEmptyUpdate.innerHTML = '';
+
+      const idelement = document.getElementById('update-id');
+      const legacyelement = document.getElementById('update-legacyid');
+      const nameelement = document.getElementById('update-name');
+      const typeelement = document.getElementById('update-type');
+      
+      idelement.value = '';
+      legacyelement.value = '';
+      nameelement.value = '';
+      typeelement.value = '';
+
+      idelement.value = custField.id;
+      legacyelement.value = custField.legacyIDV2;
+      nameelement.value = custField.label;
+      typeelement.value = custField.dataType;
+      
+      if(custField.dropDownOptions && custField.dropDownOptions.length) {
+        for(let index = 0; index <= custField.dropDownOptions.length; index++) {
+          const dropDown = custField.dropDopwnOptions[index];
+          populate(dropDownHtml('update', index), dropDopwnOptionEmptyUpdate, `ddo-update-${index}`);
+          document.getElementById(`update-dropDownOption-${index}-value`).value = dropDown.value;
+          document.getElementById(`update-dropDownOption-${index}-id`).value = dropDown.id;
+          document.getElementById(`update-dropDownOption-${index}-order`).value = dropDown.order;
+          document.getElementById(`update-dropDownOption-${index}-active`).checked = dropDown.active;
+        }
+      }
+
+      if(custField.associations && custField.associations.length) {
+        assIndexUpdate = custField.associations?.length - 1;
+        for(let index = 0; index < custField.associations.length; index++) {
+          const association = custField.associations[index];
+          populate(associationHtml('update', index), assEmptyUpdate, `ass-update-${index}`);
+          document.getElementById(`update-associations-${index}-entity`).value = association.associatedEntity;
+          document.getElementById(`update-associations-${index}-validation`).checked = association.validationOptions?.required;
+          document.getElementById(`update-associations-${index}-allowed-print`).checked = association.allowedOperations.includes('PRINT');
+          document.getElementById(`update-associations-${index}-allowed-unknown`).checked = association.allowedOperations.includes('UNKNOWN');
+          document.getElementById(`update-associations-${index}-conditions`).value = association.associationCondition;
+
+          const removeSubAssUpdate = document.getElementById(`update-remove-${index}-sub-associations`);
+          const addSubAssUpdate = document.getElementById(`update-add-${index}-sub-associations`);
+          const subAssEmptyUpdate = document.getElementById(`update-sub-associations-${index}-empty`);
+          addSubAssUpdate.addEventListener('click', function() {
+            let subAssIndexUpdate = subAssIndexesUpdate[assIndexUpdate];
+            subAssIndexUpdate++;
+            subAssIndexesUpdate[assIndexUpdate] = subAssIndexUpdate;
+            if(subAssIndexUpdate > -1) {
+              removeSubAssUpdate.removeAttribute('disabled');
+            }
+            populate(subAssociationHtml('update', subAssIndexUpdate, assIndexUpdate), subAssEmptyUpdate, `subAss-update-${assIndexUpdate}-${subAssIndexUpdate}`);
+          });
+          removeSubAssUpdate.addEventListener('click', function(e) {
+            const index = +e.target.id.split('-')[2];
+            let subAssIndexUpdate = subAssIndexesUpdate[index];
+            if(subAssIndexUpdate < 0) return;
+            const element = document.getElementById(`subAss-update-${index}-${subAssIndexUpdate}`);
+            element.remove();
+            subAssIndexUpdate--;
+            subAssIndexesUpdate[index] = subAssIndexUpdate;
+            if(subAssIndexUpdate === -1) removeSubAssUpdate.setAttribute('disabled', 'disabled');
+          });
+          if(association.subAssociations && association.subAssociations.length) {
+            subAssIndexesUpdate.push(association.subAssociations.length - 1);
+            for(let subIndex = 0; subIndex < association.subAssociations.length; subIndex++) {
+              populate(subAssociationHtml('update', subIndex, index), subAssEmptyUpdate, `subAss-update-${index}-${subIndex}`);
+              const subAssociation = association.subAssociations[subIndex];
+              document.getElementById(`update-sub-associations-${index}-${subIndex}-entity`).value = subAssociation.associatedEntity;
+              document.getElementById(`update-sub-associations-${index}-${subIndex}-validation`).value = subAssociation.validationOptions.required;
+              document.getElementById(`update-sub-associations-${index}-${subIndex}-allowed-print`).checked = association.allowedOperations.includes('PRINT');
+              document.getElementById(`update-sub-associations-${index}-${subIndex}-allowed-unknown`).checked = association.allowedOperations.includes('UNKNOWN');
+            }
+          }
+        }
+      }
+    }
+
+    createButton.addEventListener('click', function() {
+        const ddoValue = [];
+        const associationValue = [];
+        const name = document.getElementById('create-name').value;
+        if(!name) {
+          alert('the name is required');
+        }
+        const type = document.getElementById('create-type').value;
+        if(ddoIndex > -1) {
+          for(let index = 0; index <= ddoIndex; index++) {
+            const value = document.getElementById(`create-dropDownOption-${index}-value`).value;
+            if(!value) {
+              alert(`value is required for drop down option position ${index + 1}`);
+            }
+            const id = document.getElementById(`create-dropDownOption-${index}-id`).value;
+            const order = document.getElementById(`create-dropDownOption-${index}-order`).value;
+            const active = document.getElementById(`create-dropDownOption-${index}-active`).checked;
+            ddoValue.push({
+              value: value,
+              id: id,
+              order: order,
+              active: active
+            });
+          }
+        }
+        console.log('ddoValue', ddoValue);
+        if(assIndex > -1) {
+          for(let index = 0; index <= assIndex; index++) {
+            const associatedEntity = document.getElementById(`create-associations-${index}-entity`).value;
+            if(!associatedEntity) {
+              alert(`associated entity is required in association at position ${index + 1} `);
+            }
+            const validation = document.getElementById(`create-associations-${index}-validation`).checked;
+            const allowed = [...document.querySelectorAll(`input[name="create-associations-${index}-allowed"]:checked`)]?.map(el => el.value);
+            const condition = document.getElementById(`create-associations-${index}-conditions`).value;
+            associationValue.push({
+              associatedEntity: associatedEntity,
+              active: true,
+              validationOptions: {
+                required: validation
+              },
+              allowedOperations: allowed,
+              associationCondition: condition
+            });
+            if(subAssIndexes[index] > -1) {
+              const subAssociations = [];
+              for(let subIndex = 0; subIndex <= subAssIndexes[index]; subIndex++) {
+                const subAssociatedEntity = document.getElementById(`create-sub-associations-${index}-${subIndex}-entity`).value;
+                if(!subAssociatedEntity) {
+                  alert(`sub associated entity is required in association at position ${index + 1} and sub association at position ${subIndex + 1}`);
+                }
+                const subValidation = document.getElementById(`create-sub-associations-${index}-${subIndex}-validation`).checked;
+                const subAllowed = [...document.querySelectorAll(`input[name="create-sub-associations-${index}-${subIndex}-allowed"]:checked`)]?.map(el => el.value);
+                subAssociations.push({
+                  associatedEntity: subAssociatedEntity,
+                  validationOptions: {
+                    required: subValidation
+                  },
+                  active: true,
+                  allowedOperations: subAllowed
+                });
+              }
+              associationValue[index].subAssociations = subAssociations;
+            }
+          }
+        }
+        const body = {
+          name: name,
+          associations: associationValue,
+          type: type,
+          dropDownOptions: ddoValue
+        };
+        fetch('/api/quickbook/custom-fields', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const label = document.getElementById('display');
+            const table = document.getElementById('table');
+            table.innerHTML = '';
+            console.log('data', data);
+            const customField = data.appFoundationsCreateCustomFieldDefinition;
+            console.log('customField', customField);
+            if(customField) {
+                label.textContent = `Created with new id: ${customField.id} and Custom Field Name: ${customField.label}`;
+                return;
+            }
+            label.textContent = `Creation wasn't successful`;
+        })
+        .catch(error => {
+            const label = document.getElementById('display');
+            label.textContent = `Creation wasn't succesfful`;
+        });
+    });
+
+    updateButton.addEventListener('click', function() {
+        const ddoValue = [];
+        const associationValue = [];
+        const updateid = document.getElementById('update-id').value;
+        const updatelegacy = document.getElementById('update-legacyid').value;
+        const name = document.getElementById('update-name').value;
+        if(!name) {
+          alert('the name is required');
+        }
+        const type = document.getElementById('update-type').value;
+        if(ddoIndexUpdate > -1) {
+          for(let index = 0; index <= ddoIndexUpdate; index++) {
+            const value = document.getElementById(`update-dropDownOption-${index}-value`).value;
+            if(!value) {
+              alert(`value is required for drop down option position ${index + 1}`);
+            }
+            const id = document.getElementById(`update-dropDownOption-${index}-id`).value;
+            const order = document.getElementById(`update-dropDownOption-${index}-order`).value;
+            const active = document.getElementById(`update-dropDownOption-${index}-active`).checked;
+            ddoValue.push({
+              value: value,
+              id: id,
+              order: order,
+              active: active
+            });
+          }
+        }
+        console.log('ddoValue for update', ddoValue);
+        if(assIndexUpdate > -1) {
+          for(let index = 0; index < assIndexUpdate; index++) {
+            const associatedEntity = document.getElementById(`update-associations-${index}-entity`).value;
+            if(!associatedEntity) {
+              alert(`associated entity is required in association at position ${index + 1} `);
+            }
+            const validation = document.getElementById(`update-associations-${index}-validation`).checked;
+            const allowed = [...document.querySelectorAll(`input[name="update-associations-${index}-allowed"]:checked`)]?.map(el => el.value);
+            const condition = document.getElementById(`update-associations-${index}-conditions`).value;
+            associationValue.push({
+              associatedEntity: associatedEntity,
+              active: true,
+              validationOptions: {
+                required: validation
+              },
+              allowedOperations: allowed,
+              associationCondition: condition
+            });
+            if(subAssIndexesUpdate[index] > -1) {
+              const subAssociations = [];
+              for(let subIndex = 0; subIndex <= subAssIndexesUpdate[index]; subIndex++) {
+                const subAssociatedEntity = document.getElementById(`update-sub-associations-${index}-${subIndex}-entity`).value;
+                if(!subAssociatedEntity) {
+                  alert(`sub associated entity is required in association at position ${index + 1} and sub association at position ${subIndex + 1}`);
+                }
+                const subValidation = document.getElementById(`update-sub-associations-${index}-${subIndex}-validation`).checked;
+                const subAllowed = [...document.querySelectorAll(`input[name="update-sub-associations-${index}-${subIndex}-allowed"]:checked`)]?.map(el => el.value);
+                subAssociations.push({
+                  associatedEntity: subAssociatedEntity,
+                  validationOptions: {
+                    required: subValidation
+                  },
+                  active: true,
+                  allowedOperations: subAllowed
+                });
+              }
+              associationValue[index].subAssociations = subAssociations;
+            }
+          }
+        }
+        const body = {
+          name: name,
+          associations: associationValue,
+          type: type,
+          legacyIDV2: updatelegacy,
+          dropDownOptions: ddoValue
+        };
+        fetch(`/api/quickbook/custom-fields/${updateid}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const label = document.getElementById('display');
+            const table = document.getElementById('table');
+            table.innerHTML = '';
+            const customField = data.appFoundationsUpdateCustomFieldDefinition;
+            if(customField) {
+                label.textContent = `Update id: ${customField.id} and Custom Field Name: ${customField.label}`;
+                return;
+            }
+            label.textContent = `Update wasn't successful`;
+        })
+        .catch(error => {
+            const label = document.getElementById('display');
+            label.textContent = `Update wasn't succesfful`;
+        });
+    });
+
+    function showTabs() {
+        tabsSection.classList.remove('is-hidden');
+        heroSection.classList.add('is-hidden');
+        activateTab(0);
+        tabButtons[0].focus();
+    }
+
+    connectButton.addEventListener('click', login);
+
+    tabButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => activateTab(index));
+        btn.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            const next = (index + 1) % tabButtons.length;
+            activateTab(next);
+            tabButtons[next].focus();
+            } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            const prev = (index - 1 + tabButtons.length) % tabButtons.length;
+            activateTab(prev);
+            tabButtons[prev].focus();
+            }
+        });
+    });
+    })();
+  </script>
+</body>
+</html> 
