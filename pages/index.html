@@ -76,7 +76,9 @@
         <form id="form-update" class="form" novalidate>
           <div class="form-row">
             <label for="update-id">ID</label>
-            <input id="update-id" name="id" type="text" inputmode="numeric" placeholder="Enter project ID" />
+            <div id="update-id-div"></div>
+            <!-- </select> -->
+            <!-- <input id="update-id" name="id" type="text" inputmode="numeric" placeholder="Enter project ID" /> -->
           </div>
           <div class="form-row">
             <label for="update-legacyid">Legacy ID</label>
@@ -375,6 +377,7 @@
         await checkToken();
         if(isAuth) {
             showTabs();
+            onLoadCustFields();
         }
 
       function activateTab(index) {
@@ -430,6 +433,10 @@
         .then(data => {
             const customFields = data.appFoundationsCustomFieldDefinitions.edges;
             const label = document.getElementById('display');
+            let updateIdSelectHtml = `
+            <select id="update-id" name="update-id">
+              <option value="">SELECT AN ID</option>
+            `;
             display.innerText = '';
             let tableHtml = `
                 <table>
@@ -457,6 +464,8 @@
                 if(!customField) {
                     continue;
                 }
+                updateIdSelectHtml = `${updateIdSelectHtml}
+                          <option value="${customField.id}">${customField.id}</option>`;
                 tableHtml = `${tableHtml}
                     <tr> 
                         <td> ${customField.id} </td>
@@ -475,6 +484,14 @@
                 </tbody>
             </table>
             `;
+            updateIdSelectHtml = `${updateIdSelectHtml}
+                        </select>`;
+            const updateIdSelect = document.getElementById('update-id-div');
+            updateIdSelect.innerHTML = updateIdSelectHtml;
+            document.getElementById('update-id').addEventListener('change', function(e) {
+              const selectedValue = e.target.value;
+              populateCustomField(selectedValue);
+            })
             const table = document.getElementById('table');
             table.innerHTML = tableHtml;
             document.getElementById('table').addEventListener('click', function(e) {
@@ -482,18 +499,52 @@
             if(row) {
               const innerText = row.innerText.split('\t')[0]?.trim();
               console.log('selected ', innerText, 'all cust fields ', allCustomFields);
-              let custField;
-              for(const cust of allCustomFields) {
-                if(cust.node?.id === innerText) {
-                  custField = cust.node;
-                  break;
-                }
-              }
-              fillCustomField(custField);
+              populateCustomField(innerText);
             }
           })
         })
       });     
+      function populateCustomField(custValue){
+        let custField;
+        for(const cust of allCustomFields) {
+          if(cust.node?.id === custValue) {
+            custField = cust.node;
+            break;
+          }
+        }
+        fillCustomField(custField);
+      }
+
+      function onLoadCustFields() {
+        fetch('/api/quickbook/custom-fields', {
+            headers: {'Content-Type': 'application/json' },
+        })
+        .then(response => response.json())
+        .then(data => {
+            const customFields = data.appFoundationsCustomFieldDefinitions.edges;
+            let updateIdSelectHtml = `
+            <select id="update-id" name="update-id">
+              <option value="">SELECT AN ID</option>
+            `;
+            allCustomFields = customFields;
+            for(const node of customFields) {
+                const customField = node?.node;
+                if(!customField) {
+                    continue;
+                }
+                updateIdSelectHtml = `${updateIdSelectHtml}
+                          <option value="${customField.id}">${customField.id}</option>`;
+            }
+            updateIdSelectHtml = `${updateIdSelectHtml}
+                        </select>`;
+            const updateIdSelect = document.getElementById('update-id-div');
+            updateIdSelect.innerHTML = updateIdSelectHtml;
+            document.getElementById('update-id').addEventListener('change', function(e) {
+              const selectedValue = e.target.value;
+              populateCustomField(selectedValue);
+            });
+        })
+      }
       const addDropOptionUpdate = document.getElementById('update-add-dropdownoption');
       const removeDropOptionUpdate = document.getElementById('update-remove-dropdownoption');
       const dropDopwnOptionEmptyUpdate = document.getElementById('update-dropDownOption-empty');
@@ -653,7 +704,7 @@
             ddoValue.push({
               value: value,
               id: id,
-              order: order,
+              order: +order,
               active: active
             });
           }
@@ -701,7 +752,7 @@
         }
         const body = {
           name: name,
-          associations: associationValue,
+          associations: associationValue.length > 0 ? associationValue : null,
           type: type,
           dropDownOptions: ddoValue
         };
